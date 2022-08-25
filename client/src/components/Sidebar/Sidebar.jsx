@@ -5,20 +5,17 @@ import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
+import HomeIcon from "@mui/icons-material/Home";
+import PostAddIcon from "@mui/icons-material/PostAdd";
+import LogoutIcon from "@mui/icons-material/Logout";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import { NavLink } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import { Outlet } from "react-router-dom";
+import style from './sidebar.module.css'
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -122,18 +119,27 @@ function Sidebar() {
         </div>
 
         <Divider />
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        <div className="flex flex-col content-around">
+          <NavLink to="/" className={({isActive})=> isActive ? `${style.actived} my-4` : "my-4"}>
+            <span className="mx-4 ">
+              <HomeIcon />
+            </span>
+            Home
+          </NavLink>
+          <NavLink to="/addNewPost" className={({isActive})=> isActive ? `${style.actived} my-3` : "my-3"}>
+            <span className="mx-4 ">
+              <PostAddIcon />
+            </span>
+            Add New Post
+          </NavLink>
+          
+          <NavLink to="/" className="my-4">
+            <span className="mx-4">
+              <LogoutIcon />
+            </span>
+            Logout
+          </NavLink>
+        </div>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />

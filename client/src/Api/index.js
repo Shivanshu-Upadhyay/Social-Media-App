@@ -9,7 +9,8 @@ const api = axios.create({
 });
 
 // List of all the endpoints😎
-export const sendOtp = () => api.get("/allPost");
+export const fetchAllPost = () => api.get("/allPost");
+export const createNewPost = (data) => api.post("/createNewPost",data);
 
 
 

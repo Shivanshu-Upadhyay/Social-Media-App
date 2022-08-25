@@ -14,10 +14,21 @@ class PostController {
     }
   }
   async createPost(req, res) {
-    let { title, message, creator } = req.body;
-    if (!title && !message && !creator) {
-      return res.status(202).json({
-        message: "Title Message And Creator is required",
+    try {
+      let { creator, title, tags, message } = req.body;
+      if (!title && !message && !creator) {
+        return res.status(202).json({
+          message: "Title Message And Creator is required",
+        });
+      } else {
+       await postMessage.create(req.body)
+        res.status(201).json({
+          message: "New post created",
+        });
+      }
+    } catch (error) {
+      res.status(400).json({
+        message: "Error in creting Post",
       });
     }
   }
