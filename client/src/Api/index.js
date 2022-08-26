@@ -11,6 +11,8 @@ const api = axios.create({
 // List of all the endpoints😎
 export const fetchAllPost = () => api.get("/allPost");
 export const createNewPost = (data) => api.post("/createNewPost",data);
+export const deleteOnePost = (data) => api.post("/deletePost",data);
+export const updateOnePost = (data) => api.post("/updateOnePost",data);
 
 
 

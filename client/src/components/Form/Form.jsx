@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import SendIcon from "@mui/icons-material/Send";
 import styles from "./form.module.css";
 import Button from "@mui/material/Button";
-import { createNewPost } from "../../Api/index";
-import { useNavigate } from "react-router-dom";
+import { createNewPost, updateOnePost } from "../../Api/index";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 function Form() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const { onePost } = useSelector((state) => state.postReducer);
   const [formData, setFormData] = useState({
     creator: "",
     title: "",
@@ -16,6 +19,28 @@ function Form() {
     message: "",
     selectedFile: "./imgs/avatar.svg",
   });
+
+  useEffect(() => {
+    if (id) {
+      setFormData((pre) => ({
+        ...pre,
+        creator: onePost?.creator,
+        title: onePost?.title,
+        tags: onePost?.tags,
+        message: onePost?.message,
+        selectedFile: onePost?.selectedFile,
+      }));
+    } else {
+      setFormData({
+        creator: "",
+        title: "",
+        tags: "",
+        message: "",
+        selectedFile: "./imgs/avatar.svg",
+      });
+    }
+  }, [onePost, id]);
+
   const chooseImg = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -31,9 +56,15 @@ function Form() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await createNewPost(formData);
-      console.log(data);
-      navigate("/");
+      if (id) {
+        const data = await updateOnePost({ ...formData, _id: id });
+        console.log(data);
+        navigate("/");
+      } else {
+        const { data } = await createNewPost(formData);
+        console.log(data);
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -41,7 +72,9 @@ function Form() {
   return (
     <>
       <div>
-        <h2 className="text-[24px]  mb-3 font-bold">Create New Post</h2>
+        <h2 className="text-[24px]  mb-3 font-bold">
+          {id ? "Update" : "Create New"} Post
+        </h2>
       </div>
       <form autoComplete="off">
         <Box sx={{ flexGrow: 1 }}>

@@ -10,6 +10,7 @@ function Routers() {
       <Route path="/" element={<Sidebar />}>
         <Route index element={<Posts />} />
         <Route path="addNewPost" element={<Form />} />
+        <Route path="updatePost/:id" element={<Form />} />
       </Route>
     </Routes>
   );

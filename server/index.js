@@ -12,7 +12,7 @@ app.use(cookieParser())
 // cors error
 const corsOption = {
     credentials:true,
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3001"],
   };
 app.use(cors(corsOption));
 const PORT = process.env.PORT || 5001;
