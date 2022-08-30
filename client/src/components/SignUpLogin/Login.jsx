@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { GoogleLogin } from "react-google-login";
 import { useEffect } from "react";
@@ -9,24 +9,33 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   useEffect(() => {
     function start() {
       gapi.auth2.init({
-        clientId:
-          "674211032311-olctd50j1k1hgsa18jtomkbtoaggnpg1.apps.googleusercontent.com",
+        clientId:process.env.REACT_APP_CLIENTID,
         scope: "",
       });
     }
     gapi.load("client:auth2", start);
   }, []);
-
+  const handleChange = (e) => {
+    setFormData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log(formData);
+  };
   const googleSuccess = async (response) => {
     const result = response?.profileObj;
     const token = response?.tokenId;
     console.log(result);
     dispatch(setAuth(token));
     localStorage.setItem("auth", token);
-      navigate("/");
+    navigate("/");
   };
   const googleFailure = (err) => {
     console.log(err);
@@ -49,6 +58,9 @@ function Login() {
               <input
                 type="text"
                 placeholder="Email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
@@ -57,6 +69,9 @@ function Login() {
               <input
                 type="password"
                 placeholder="Password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
@@ -69,7 +84,10 @@ function Login() {
               </Link>
             </div>
             <div className="flex items-center justify-between  ">
-              <button className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900 w-full">
+              <button
+                className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900 w-full"
+                onClick={handleSubmit}
+              >
                 Login
               </button>
             </div>
