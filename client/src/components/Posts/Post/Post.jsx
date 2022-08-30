@@ -11,7 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import styles from "./post.module.css";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { updateOnePost } from "../../../Api";
+import { likePost, updateOnePost } from "../../../Api";
 import { useDispatch } from "react-redux";
 import { setOnePost } from "../../../Redux/slice/postSlice";
 import {useNavigate} from 'react-router-dom'
@@ -24,7 +24,12 @@ export default function Post({
   _id,
   deletePost,
   selectedFile,
+  like,
+  allPost
 }) {
+
+  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const readOnePost = async (_id) => {
@@ -33,6 +38,11 @@ export default function Post({
     dispatch(setOnePost(data.onePostVal));
     navigate(`/updatePost/${_id}`)
   };
+  const handleLike = async(id)=>{
+    const {data} = await likePost(id)
+    console.log(data);
+    allPost();
+  }
   return (
     <>
       <Grid item xs={12} md={4} lg={3}>
@@ -45,7 +55,8 @@ export default function Post({
           />
           <CardContent>
             <div className="flex justify-between items-center">
-              #{tags}
+            <div>{tags[0].split(',').map((item,i)=><span className=" text-blue-800" key={i}>#{item} </span>)}</div>
+              
               <Tooltip
                 title="Edit"
                 className=" cursor-pointer"
@@ -72,8 +83,8 @@ export default function Post({
             </div>
           </CardContent>
           <CardActions className="flex justify-between">
-            <Button size="small">
-              <span className="font-bold">Like</span> <FavoriteBorderIcon />
+            <Button size="small"onClick={()=>handleLike(_id)}>
+              <span className="font-bold">Like</span> <FavoriteBorderIcon />{like}
             </Button>
             <Button size="small" onClick={() => deletePost(_id)}>
               <span className="font-bold text-red-600">Delete</span>

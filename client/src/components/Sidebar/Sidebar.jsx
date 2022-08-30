@@ -12,10 +12,12 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import { Outlet } from "react-router-dom";
-import style from './sidebar.module.css'
+import { useDispatch } from "react-redux";
+import style from "./sidebar.module.css";
+import { setAuth } from "../../Redux/slice/authSlice";
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -65,8 +67,16 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 function Sidebar() {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
-
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.clear("auth");
+    dispatch(setAuth([]));
+    setTimeout(() => {
+      navigate("/login");
+    }, 100);
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -79,17 +89,24 @@ function Sidebar() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(open && { display: "none" }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Toolbar>
+        <div className="flex justify-between items-center">
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{ mr: 2, ...(open && { display: "none" }) }}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Toolbar>
+          <div>
+            <button className={style.logout} onClick={logout}>
+              Logout
+            </button>
+          </div>
+        </div>
       </AppBar>
       <Drawer
         sx={{
@@ -120,25 +137,35 @@ function Sidebar() {
 
         <Divider />
         <div className="flex flex-col content-around">
-          <NavLink to="/" className={({isActive})=> isActive ? `${style.actived} my-4` : "my-4"}>
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive ? `${style.actived} my-4` : "my-4"
+            }
+          >
             <span className="mx-4 ">
               <HomeIcon />
             </span>
             Home
           </NavLink>
-          <NavLink to="/addNewPost" className={({isActive})=> isActive ? `${style.actived} my-3` : "my-3"}>
+          <NavLink
+            to="/addNewPost"
+            className={({ isActive }) =>
+              isActive ? `${style.actived} my-3` : "my-3"
+            }
+          >
             <span className="mx-4 ">
               <PostAddIcon />
             </span>
             Add New Post
           </NavLink>
-          
-          <NavLink to="/" className="my-4">
+
+          <div to="/login" onClick={logout} className="my-4 cursor-pointer">
             <span className="mx-4">
               <LogoutIcon />
             </span>
             Logout
-          </NavLink>
+          </div>
         </div>
       </Drawer>
       <Main open={open}>

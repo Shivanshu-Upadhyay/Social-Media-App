@@ -40,11 +40,13 @@ function Posts() {
                 creator={item.creator}
                 message={item.message}
                 title={item.title}
+                like={item.likeCount[0]}
                 tags={item.tags}
                 key={item._id}
                 _id={item._id}
                 selectedFile={item.selectedFile}
                 deletePost={deletePost}
+                allPost={allPost}
               />
             );
           })}

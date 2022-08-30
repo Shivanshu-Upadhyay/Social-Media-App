@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import postMessage from "../models/postMessage.js";
 class PostController {
   async getPost(req, res) {
@@ -60,7 +61,7 @@ class PostController {
           message: "No Id Provided",
         });
       } else if ((creator, title)) {
-        const result = await postMessage.findByIdAndUpdate(_id,{creator,title,tags,selectedFile,message})
+        const result = await postMessage.findByIdAndUpdate(_id,{creator,title,tags,selectedFile,message},{new:true})
         res.status(200).json({
           message:"Update successfully✅"
         })
@@ -75,6 +76,20 @@ class PostController {
         message: "update Post server error",
       });
     }
+  }
+  async likePost(req,res){
+    const {id} = req.params
+    
+    if(!mongoose.Types.ObjectId.isValid(id)){
+     return res.status(400).json({
+        message:"No Id Found"
+      })
+    }
+    const post = await postMessage.findById(id)
+    await postMessage.findByIdAndUpdate(id,{likeCount:Number(post.likeCount)+1},{new:true})
+    res.status(200).json({
+      message:"Like Updated"
+    })
   }
 }
 export default new PostController();
