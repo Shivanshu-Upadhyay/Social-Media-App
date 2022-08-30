@@ -71,7 +71,7 @@ function Sidebar() {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const logout = () => {
-    localStorage.clear("auth");
+    localStorage.clear();
     dispatch(setAuth([]));
     setTimeout(() => {
       navigate("/login");

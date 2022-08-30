@@ -33,7 +33,6 @@ class PostController {
       });
     }
   }
-
   async deletePost(req, res) {
     try {
       const _id = req.body;
@@ -79,7 +78,9 @@ class PostController {
   }
   async likePost(req,res){
     const {id} = req.params
-    
+    if(!req.userId){
+      return res.status(404).json({message:"auth not found"})
+    }
     if(!mongoose.Types.ObjectId.isValid(id)){
      return res.status(400).json({
         message:"No Id Found"

@@ -6,6 +6,7 @@ import { gapi } from "gapi-script";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../Redux/slice/authSlice";
 import { useNavigate } from "react-router-dom";
+import {loginApi} from '../../Api/index'
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,13 +22,17 @@ function Login() {
       });
     }
     gapi.load("client:auth2", start);
+   
   }, []);
   const handleChange = (e) => {
     setFormData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
   };
-  const handleSubmit = (e) => {
+  const handleSubmit =async (e) => {
     e.preventDefault()
-    console.log(formData);
+    const {data}  = await loginApi(formData)
+    localStorage.setItem("auth", data.token);
+    navigate("/");
+    console.log(data);
   };
   const googleSuccess = async (response) => {
     const result = response?.profileObj;
@@ -59,7 +64,6 @@ function Login() {
                 type="text"
                 placeholder="Email"
                 name="email"
-                value={formData.email}
                 onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
@@ -70,7 +74,6 @@ function Login() {
                 type="password"
                 placeholder="Password"
                 name="password"
-                value={formData.password}
                 onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />

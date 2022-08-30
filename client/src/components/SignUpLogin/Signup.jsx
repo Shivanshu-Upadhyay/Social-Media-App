@@ -5,13 +5,14 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setAuth } from "../../Redux/slice/authSlice";
 import { gapi } from "gapi-script";
+import { signupApi } from "../../Api";
 function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
     function start() {
       gapi.auth2.init({
-        clientId:process.env.REACT_APP_CLIENTID,
+        clientId: process.env.REACT_APP_CLIENTID,
         scope: "",
       });
     }
@@ -19,15 +20,16 @@ function Signup() {
   }, []);
   const [formData, setFormData] = useState({
     fullName: "",
-    email:'',
+    email: "",
     password: "",
   });
   const handleChange = (e) => {
     setFormData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
   };
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log(formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { data } = await signupApi(formData);
+    console.log(data);
   };
   const googleSuccess = async (response) => {
     const result = response?.profileObj;
@@ -51,10 +53,8 @@ function Signup() {
         </h3>
         <form action="">
           <div className="mt-4">
-          <div>
-              <label className="block" >
-                Full Name
-              </label>
+            <div>
+              <label className="block">Full Name</label>
               <input
                 type="text"
                 placeholder="Full Name"
@@ -65,9 +65,7 @@ function Signup() {
               />
             </div>
             <div>
-              <label className="block" >
-                Email
-              </label>
+              <label className="block">Email</label>
               <input
                 type="text"
                 placeholder="Email"
@@ -88,9 +86,12 @@ function Signup() {
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
-            
+
             <div className="flex items-baseline justify-center flex-wrap">
-              <button className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900 w-full" onClick={handleSubmit}>
+              <button
+                className="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900 w-full"
+                onClick={handleSubmit}
+              >
                 Signup
               </button>
               <GoogleLogin
@@ -113,7 +114,10 @@ function Signup() {
                 onFailure={googleFailure}
                 cookiePolicy={"single_host_origin"}
               />
-              <Link to="/login" className="text-sm text-blue-600 hover:underline my-2">
+              <Link
+                to="/login"
+                className="text-sm text-blue-600 hover:underline my-2"
+              >
                 <span className=" text-[14px]">Have Account </span>
                 <span className="font-bold">Login</span>
               </Link>
